@@ -114,35 +114,13 @@ ids_left <- ids[!(ids %in% loc_dat$id)]
 to_del_e <- which(V(rating_graph)$name %in% ids_left)
 full_graph <- delete_vertices(rating_graph, to_del_e)
 
-#Russian language is nice and all, but working with latin symbols is way more convenient, so
-#we convert all city and country names to latin letters (in UTF-8 encoding).
-loc_data$city <- gsub('ё','e',gsub('Ё','E',loc_data$city))
-loc_data$country <- gsub('ё','e',gsub('Ё','E',loc_data$country))
-loc_data$city <- stri_trans_general(loc_data$city, "russian-latin/bgn")
-loc_data$country <- stri_trans_general(loc_data$country, "russian-latin/bgn")
-
 ungraph <- igraph::as_data_frame(full_graph, 'both')
 ungraph$vertices <- ungraph$vertices %>% 
   left_join(loc_data, c('name'='id'))
 the_graph <- graph_from_data_frame(ungraph$edges,
-                                   directed = F,
+                                   directed = FALSE,
                                    vertices = ungraph$vertices)
-rm(full_graph,rating_graph)
-#Since our network is rather large, computing its diameter will take some time, 
-#but not too long
-diameter(full_graph)
-#[1] 22
+rm(full_graph,rating_graph, ids, ids_left, n_occur)
 
-count_components(full_graph)
-#[1] 8227
-
-components(full_graph)$csize %>% max()
-# 149749
-
-components(full_graph)$csize[2:8210] %>% sort() %>% plot(main = 
-                                                             "Component size distribution without the largest one", 
-                                                           ylab = "Component size")
-
-large_comps <- decompose(full_graph, min.vertices = 50)
 
 
