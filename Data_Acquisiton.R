@@ -122,5 +122,7 @@ the_graph <- graph_from_data_frame(ungraph$edges,
                                    vertices = ungraph$vertices)
 rm(full_graph,rating_graph, ids, ids_left, n_occur)
 
+#some teams (from Crimea, Abkhazia etc.) have no "country" attribute. We fix that.
+V(the_graph)$country[which(V(the_graph)$country == "")] <- "NoCountry"
 
 
