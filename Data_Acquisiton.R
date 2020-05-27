@@ -114,13 +114,14 @@ ids_left <- ids[!(ids %in% loc_dat$id)]
 to_del_e <- which(V(rating_graph)$name %in% ids_left)
 full_graph <- delete_vertices(rating_graph, to_del_e)
 
+#add attributes
 ungraph <- igraph::as_data_frame(full_graph, 'both')
 ungraph$vertices <- ungraph$vertices %>% 
   left_join(loc_data, c('name'='id'))
 the_graph <- graph_from_data_frame(ungraph$edges,
                                    directed = FALSE,
                                    vertices = ungraph$vertices)
-rm(full_graph,rating_graph, ids, ids_left, n_occur)
+rm(full_graph,rating_graph, ids, ids_left, n_occur, to_del_e)
 
 #some teams (from Crimea, Abkhazia etc.) have no "country" attribute. We fix that.
 V(the_graph)$country[which(V(the_graph)$country == "")] <- "NoCountry"
