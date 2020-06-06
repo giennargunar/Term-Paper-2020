@@ -59,6 +59,15 @@ plot_ly(top_df, labels = ~., values = ~Freq,
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 
+influence<-induced.subgraph(the_graph, V(the_graph)[which(degree(the_graph)>100)])
+set.seed(100)
+png('inf.png', width = 4000, height = 3000)
+plot (influence, vertex.size = 2,
+      vertex.label=NA, edge.width = 0.5,
+      layout = layout_nicely, asp=9/16, 
+      vertex.color = "royalblue1")
+dev.off()
+
 #Compare to random
 set.seed(1729)
 p_erdos <- erdos.renyi.game(n = 203116, p.or.m = 0.00006, type = "gnp", loops = FALSE)
